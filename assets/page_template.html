@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{SCENE_ZH}} · 场景脚本</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Hanken+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+/* ===== STYLE PRESET (injected) ===== */
+{{STYLE_VARS}}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding: 28px 14px 40px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Subtle paper depth so it isn't a flat block */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(120% 80% at 80% -10%, var(--glow) 0%, transparent 55%),
+    radial-gradient(120% 90% at -10% 110%, var(--glow2) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+
+.page {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 560px;
+}
+
+/* ---------- MASTHEAD ---------- */
+.masthead { margin-bottom: 26px; }
+.kicker {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--body); font-weight: 600;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent);
+}
+.kicker .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.scene-en {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 38px; line-height: 1.04;
+  letter-spacing: -0.015em;
+  margin: 12px 0 6px;
+  color: var(--ink);
+}
+.scene-zh {
+  font-family: var(--body); font-weight: 700;
+  font-size: 19px; color: var(--ink-soft);
+  margin-bottom: 16px;
+}
+.brief {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  font-size: 13px; color: var(--muted);
+}
+.brief .chip {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 999px; padding: 5px 12px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.brief .chip b { color: var(--ink-soft); font-weight: 600; }
+.pain {
+  margin-top: 14px; padding: 12px 14px;
+  background: var(--accent-soft); border-radius: 12px;
+  font-size: 13.5px; color: var(--accent-ink);
+  border: 1px solid var(--accent-line);
+}
+.pain b { font-weight: 700; }
+
+/* ---------- SECTION SCAFFOLD ---------- */
+section { margin-top: 30px; }
+.sec-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+.sec-num {
+  font-family: var(--display); font-weight: 900;
+  font-size: 15px; color: var(--accent);
+  font-feature-settings: "tnum";
+}
+.sec-title {
+  font-family: var(--body); font-weight: 700;
+  font-size: 17px; color: var(--ink); letter-spacing: 0.01em;
+}
+.sec-title .en { color: var(--muted); font-weight: 600; font-size: 12.5px; letter-spacing: 0.04em; margin-left: 6px; }
+.sec-hint { font-size: 12px; color: var(--muted); margin: -8px 0 14px; }
+.star { color: var(--accent); }
+
+/* ---------- FRAMES (hero) ---------- */
+.frame {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 16px 18px; margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+.frame-top { display: flex; flex-direction: column; gap: 5px; margin-bottom: 4px; }
+.frame-en {
+  font-family: var(--display); font-weight: 600;
+  font-size: 21px; color: var(--ink); letter-spacing: -0.01em;
+}
+.frame-en .slot {
+  color: transparent; border-bottom: 2.5px dashed var(--accent);
+  padding: 0 18px; font-style: italic;
+}
+.frame-zh { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+.fills { margin: 12px 0 4px; display: grid; gap: 8px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.fill {
+  padding-left: 14px; position: relative;
+  font-size: 14.5px; color: var(--ink-soft);
+}
+.fill::before {
+  content: ""; position: absolute; left: 0; top: 9px;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+}
+.fill .en { font-weight: 500; }
+.fill .en u { text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.fill .zh { color: var(--muted); font-size: 12.5px; display: block; margin-top: 1px; }
+.frame-meta {
+  margin-top: 12px; padding-top: 11px; border-top: 1px dashed var(--line);
+  display: grid; gap: 5px; font-size: 12px;
+}
+.frame-meta .row { display: flex; gap: 7px; color: var(--muted); }
+.frame-meta .row .tag {
+  font-weight: 700; color: var(--accent); white-space: nowrap;
+  font-size: 11px; letter-spacing: 0.02em;
+}
+
+/* ---------- DIALOGUE ---------- */
+.beat { margin-bottom: 16px; }
+.beat-label {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
+}
+.beat.tricky { padding: 14px 16px; background: var(--accent-soft); border-radius: 14px; border: 1px solid var(--accent-line); }
+.beat.tricky .beat-label { color: var(--accent); }
+.beat-narration { font-size: 12.5px; color: var(--muted); font-style: italic; margin-bottom: 9px; }
+.beat-illus { width: 100%; border-radius: 12px; margin-bottom: 10px; display: block; border: 1px solid var(--line); }
+.line { display: flex; gap: 10px; margin-bottom: 9px; align-items: flex-start; }
+.who {
+  flex: 0 0 auto; min-width: 46px; text-align: right;
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  padding-top: 3px; letter-spacing: 0.02em;
+}
+.line.you .who { color: var(--accent); }
+.bubble { flex: 1; }
+.bubble .en { font-size: 15px; font-weight: 500; color: var(--ink); line-height: 1.45; }
+.bubble .zh { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+/* ---------- AUTHENTIC (中式 vs 地道) ---------- */
+.auth { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+.auth-row { padding: 14px 16px; border-bottom: 1px solid var(--line); background: var(--card); }
+.auth-row:last-child { border-bottom: none; }
+.auth-intent { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 9px; }
+.auth-pair { display: grid; gap: 7px; }
+.auth-line { display: flex; gap: 8px; align-items: baseline; font-size: 14px; }
+.auth-line .mark { flex: 0 0 auto; font-size: 13px; }
+.auth-line.bad .text { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--bad); text-decoration-thickness: 1.5px; }
+.auth-line.good .text { color: var(--ink); font-weight: 600; background: var(--hl); padding: 1px 4px; border-radius: 4px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.auth-why { font-size: 12px; color: var(--muted); margin-top: 8px; padding-left: 21px; line-height: 1.5; }
+
+/* ---------- RESCUE (临场救命句) ---------- */
+.rescue { background: var(--rescue-bg); border: 1.5px solid var(--rescue-line); border-radius: 16px; padding: 16px 18px; }
+.rescue-item { display: flex; gap: 11px; padding: 9px 0; border-bottom: 1px dashed var(--rescue-line); }
+.rescue-item:last-child { border-bottom: none; }
+.rescue-item:first-child { padding-top: 0; }
+.rescue-ic { flex: 0 0 auto; font-size: 15px; line-height: 1.4; }
+.rescue-en { font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.rescue-zh { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.rescue-use { font-size: 11.5px; color: var(--rescue-ink); margin-top: 3px; font-weight: 500; }
+
+/* ---------- VOCAB (de-emphasized) ---------- */
+.vocab-wrap { display: flex; flex-wrap: wrap; gap: 7px; }
+.vchip {
+  background: var(--card); border: 1px solid var(--line); border-radius: 9px;
+  padding: 7px 10px; font-size: 12.5px;
+}
+.vchip .w { font-weight: 700; color: var(--ink-soft); }
+.vchip .ipa { color: var(--muted); font-size: 11px; margin: 0 4px; }
+.vchip .z { color: var(--muted); }
+
+/* ---------- TIP ---------- */
+.tip { background: var(--card); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: 13px 16px; }
+.tip-title { font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+.tip-body { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; }
+
+/* ---------- TTS ---------- */
+.tts-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--card);
+  color: var(--muted); cursor: pointer; flex-shrink: 0;
+  font-size: 9px; line-height: 1; vertical-align: middle;
+  margin-left: 7px; transition: border-color .15s, color .15s, background .15s;
+  user-select: none; -webkit-user-select: none;
+}
+.tts-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.tts-btn.playing { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); animation: tts-pulse 1s ease-in-out infinite; }
+@keyframes tts-pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+/* ---------- FOOTER ---------- */
+.foot { margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--muted); }
+.foot .thesis { font-family: var(--display); font-weight: 600; font-style: italic; color: var(--ink-soft); }
+.foot .thesis .arrow { color: var(--accent); font-style: normal; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="masthead">
+    <span class="kicker"><span class="dot"></span>{{KICKER}}</span>
+    <h1 class="scene-en">{{SCENE_EN}}</h1>
+    <div class="scene-zh">{{SCENE_ZH}}</div>
+    <div class="brief">{{BRIEF}}</div>
+    {{PAIN}}
+  </header>
+
+  {{FRAMES}}
+  {{DIALOGUE}}
+  {{AUTHENTIC}}
+  {{RESCUE}}
+  {{VOCAB}}
+  {{TIP}}
+
+  <footer class="foot">
+    <span>{{FOOT_LEFT}}</span>
+    <span class="thesis">练 <span class="arrow">→</span> 用</span>
+  </footer>
+
+</div>
+</body>
+</html>
