@@ -143,6 +143,17 @@ python3 scripts/generate_illustration.py --check-key --api-key <KEY>
 
 从 `content.json` 为每张海报生成英文提示词，写入 `prompts.json`。
 
+**⚠️ prompts.json 必须是以下结构（裸数组会导致脚本报错）：**
+```json
+{
+  "scene": "场景名",
+  "posters": [
+    { "id": "01_frame_1", "template": "A", "ratio": "4:3", "label": "...", "prompt": "..." },
+    ...
+  ]
+}
+```
+
 **卡片 → 模板映射：**
 
 | 内容类型 | 模板 | 比例 | 拆分规则 |

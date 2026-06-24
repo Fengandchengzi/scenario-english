@@ -124,6 +124,10 @@ Scenario_Spec:
 6. **region 一致**：US 用 gas / apartment / pants；UK 用 petrol / flat / trousers。别混。
 7. **中文是脚手架不是主体**：每个英文给到精准、口语化的中文，但页面的"星光"是英文表达本身。
 8. **只输出 JSON**，不要任何前后说明、不要 Markdown 代码围栏。生成后存到临时文件供 build_page.py 使用。
+9. **JSON 字符串内部禁止使用 ASCII 双引号 `"`**：
+   - 引用**中文词语**：用 `「」`，如 `「想提效」`、`「你们怎么做」`
+   - 引用**英文术语/句子**：用单引号 `'`，如 `'fair summary'`、`'What if this handled itself'`
+   - 直接写 `"xxx"` 会破坏 JSON 结构，导致脚本报错。
 
 ---
 
